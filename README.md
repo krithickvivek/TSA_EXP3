@@ -1,43 +1,70 @@
 # Ex.No: 03   COMPUTE THE AUTO FUNCTION(ACF)
-Date: 
+### Date: 
+## AIM:
+To compute the AutoCorrelation Function (ACF) of the given Revenue (millions) data to determine the model type suitable for the data.
 
-### AIM:
-To Compute the AutoCorrelation Function (ACF) of the data for the first 35 lags to determine the model
-type to fit the data.
-### ALGORITHM:
+## ALGORITHM:
 1. Import the necessary packages
-2. Find the mean, variance and then implement normalization for the data.
-3. Implement the correlation using necessary logic and obtain the results
-4. Store the results in an array
-5. Represent the result in graphical representation as given below.
-### PROGRAM:
+2. Load the dataset and clean the Revenue column by removing symbols
+3. Apply first-order differencing to make the data stationary
+4. Find the mean and variance of the differenced data
+5. Compute autocorrelation values for all possible lags
+6. Store the results in an array
+7. Plot the autocorrelation values using a graph
+
+## PROGRAM:
+```python
+import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
-import numpy as np
+# Load dataset
+data = pd.read_csv('Apple 2009-2024.csv')
 
-data = [3, 16, 156, 47, 246, 176, 233, 140, 130,
-101, 166, 201, 200, 116, 118, 247,
-209, 52, 153, 232, 128, 27, 192, 168, 208,
-187, 228, 86, 30, 151, 18, 254,
-76, 112, 67, 244, 179, 150, 89, 49, 83, 147, 90,
-33, 6, 158, 80, 35, 186, 127]
+# Clean Revenue column
+data['Revenue (millions)'] = data['Revenue (millions)'] \
+    .str.replace('$','', regex=False) \
+    .str.replace(',','', regex=False) \
+    .astype(float)
 
-lags = range(35)
+# Apply differencing
+data['diff'] = data['Revenue (millions)'] - data['Revenue (millions)'].shift(1)
+data = data.dropna()
 
+values = data['diff'].values
 
-#Pre-allocate autocorrelation table
+# Number of lags (maximum possible)
+lags = range(len(values))
 
-#Mean
+# Pre-allocate autocorrelation list
+autocorr_values = []
 
-#Variance
+# Mean
+mean_data = np.mean(values)
 
-#Normalized data
+# Variance
+variance_data = np.var(values)
 
-#Go through lag components one-by-one
+# Compute autocorrelation
+for lag in lags:
+    if lag == 0:
+        autocorr_values.append(1)
+    else:
+        auto_cov = np.sum((values[:-lag] - mean_data) * (values[lag:] - mean_data)) / len(values)
+        autocorr_values.append(auto_cov / variance_data)
 
-#display the graph
+# Plot graph
+plt.figure(figsize=(10, 6))
+plt.stem(list(lags), autocorr_values)
+plt.title('Autocorrelation of Differenced Revenue')
+plt.xlabel('Lag')
+plt.ylabel('Autocorrelation')
+plt.grid(True)
+plt.show()
+```
 
-### OUTPUT:
+## OUTPUT:
+<img width="867" height="550" alt="image" src="https://github.com/user-attachments/assets/debeebfb-af4f-44a3-aa09-ca2c55ab1e96" />
 
-### RESULT:
-        Thus we have successfully implemented the auto correlation function in python.
+## RESULT:
+Thus we have successfully implemented the auto correlation function in python.
