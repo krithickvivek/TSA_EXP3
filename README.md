@@ -2,7 +2,10 @@
 ### Date: 
 ## AIM:
 To compute the AutoCorrelation Function (ACF) of the given Revenue (millions) data to determine the model type suitable for the data.
-
+## DATASET
+Apple 2009-2005
+## SOFTWARE REQUIRED
+Google Colab
 ## ALGORITHM:
 1. Import the necessary packages
 2. Load the dataset and clean the Revenue column by removing symbols
